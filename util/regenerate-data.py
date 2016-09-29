@@ -1,4 +1,4 @@
-from csrankings import csv2dict_str_str, startyear, endyear, areadict, confdict, arealist, venues, pagecount, startpage, ElementTree, pageCountThreshold, ISMB_Bioinformatics, ICSE_ShortPaperStart
+from csrankings import csv2dict_str_str, csv2dict_str_list, startyear, endyear, areadict, confdict, arealist, venues, pagecount, startpage, ElementTree, pageCountThreshold, ISMB_Bioinformatics, ICSE_ShortPaperStart
 
 def parseDBLP(facultydict):
     authlogs = {}
@@ -141,6 +141,7 @@ def parseDBLP(facultydict):
 
 
 fdict = csv2dict_str_str('faculty-affiliations.csv')
+fdict_list = csv2dict_str_list('faculty-affiliations.csv')
 
 (intauthors_gl, authscores_gl, authscoresAdjusted_gl, authlog_gl) = parseDBLP(fdict)
 
@@ -149,18 +150,20 @@ f.write('"name","dept","area","count","adjustedcount","year"\n')
 for (authorName, area, year) in authscores_gl:
     count = authscores_gl[(authorName, area, year)]
     countAdjusted = authscoresAdjusted_gl[(authorName, area, year)]
-    f.write(authorName.encode('utf-8'))
-    f.write(',')
-    f.write((fdict[authorName]).encode('utf-8'))
-    f.write(',')
-    f.write(area)
-    f.write(',')
-    f.write(str(count))
-    f.write(',')
-    f.write(str(countAdjusted))
-    f.write(',')
-    f.write(str(year))
-    f.write('\n')
+    depts = fdict_list[authorName]
+    for dept in depts:
+        f.write(authorName.encode('utf-8'))
+        f.write(',')
+        f.write(dept.encode('utf-8'))
+        f.write(',')
+        f.write(area)
+        f.write(',')
+        f.write(str(count/len(depts)))
+        f.write(',')
+        f.write(str(countAdjusted/len(depts)))
+        f.write(',')
+        f.write(str(year))
+        f.write('\n')
 f.close()
 
 f = open('rankings-all.log','w')

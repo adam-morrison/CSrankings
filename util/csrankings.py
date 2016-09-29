@@ -1,4 +1,5 @@
 # from lxml import etree as ElementTree
+from collections import defaultdict
 import xml.etree.ElementTree as ElementTree
 import htmlentitydefs
 import csv
@@ -141,3 +142,12 @@ def csv2dict_str_str(fname):
 
 def sortdictionary(d):
     return sorted(d.iteritems(), key=operator.itemgetter(1), reverse = True)    
+
+
+def csv2dict_str_list(fname):
+    d = defaultdict(list)
+    with open(fname, mode='r') as infile:
+        reader = csv.reader(infile)
+        for rows in reader:
+            d[unicode(rows[0].strip(),'utf-8')].append(unicode(rows[1].strip(),'utf-8'))
+    return d
